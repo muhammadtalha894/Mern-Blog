@@ -26,6 +26,8 @@ export const signUp = async (req, res, next) => {
   }
 };
 
+// user Sign in Api
+
 export const signIn = async (req, res, next) => {
   const { email, password } = req.body;
   try {
