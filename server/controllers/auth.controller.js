@@ -15,7 +15,7 @@ export const signUp = async (req, res, next) => {
   try {
     const newUser = await User.create({ username, email, password });
 
-    res.status(201).json({ success: true, newUser });
+    res.status(201).json({ success: true });
   } catch (error) {
     console.log(error);
     next(error);
