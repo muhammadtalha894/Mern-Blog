@@ -35,7 +35,7 @@ export const signIn = async (req, res, next) => {
       return next(new ErrorHandler('All fields are required!', 400));
 
     const user = await User.findOne({ email });
-    if (!user) return next('user not found!', 404);
+    if (!user) return next(new ErrorHandler('user not found!', 404));
 
     const checkPassword = await user.comparePassword(password);
 
