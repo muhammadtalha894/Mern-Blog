@@ -47,3 +47,34 @@ export const signIn = async (req, res, next) => {
     next(error);
   }
 };
+
+// Google Sign in Api
+
+export const Google = async (req, res, next) => {
+  const { username, email, photo } = req.body;
+
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (user) {
+      jwtToken(res, user);
+    } else {
+      const password =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const newUser = new User({
+        username:
+          username.toLowerCase().split(' ').join('') +
+          Math.random().toString().slice(-8),
+        email,
+        password,
+        photo,
+      });
+      await newUser.save();
+      jwtToken(res, newUser);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
