@@ -21,7 +21,7 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { app } from '../firebase';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 const DashProfile = () => {
   //this are states for img upload functionality..
 
@@ -30,6 +30,7 @@ const DashProfile = () => {
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imagePerc, setImagePerc] = useState(null);
   const [fileUploadError, setfileUploadError] = useState(null);
+  const [imageUploadLoaing, setImageUploadLoaing] = useState(false);
 
   // this is for update user profile..
 
@@ -40,11 +41,12 @@ const DashProfile = () => {
   //this is for delete functionality
   const [showModal, setShowModal] = useState(false);
 
-  const { currentUser, error: errorMessage } = useSelector(
-    (state) => state.user,
-  );
+  const {
+    currentUser,
+    error: errorMessage,
+    loading,
+  } = useSelector((state) => state.user);
 
-  console.log(errorMessage);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -67,6 +69,7 @@ const DashProfile = () => {
   //upload image on firebase
 
   const uploadImage = async () => {
+    setImageUploadLoaing(true);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -83,6 +86,7 @@ const DashProfile = () => {
         setfileUploadError(
           'Could not upload image (File must be less than 2MB  )',
         );
+        setImageUploadLoaing(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -90,6 +94,7 @@ const DashProfile = () => {
           setImagePerc(null);
           setImageFile(null);
           setImageFileUrl(null);
+          setImageUploadLoaing(false);
         });
       },
     );
@@ -229,9 +234,20 @@ const DashProfile = () => {
           type='submit'
           gradientDuoTone='purpleToBlue'
           className='uppercase'
+          disabled={imageUploadLoaing || loading}
         >
-          Update
+          {loading ? 'Loading...' : 'Update'}
         </Button>
+        <Link to={'/create-post'}>
+          <Button
+            type='button'
+            gradientDuoTone='purpleToPink'
+            outline
+            className='uppercase w-full'
+          >
+            create a post
+          </Button>
+        </Link>
       </form>
       <div className='flex justify-between mt-5'>
         <span

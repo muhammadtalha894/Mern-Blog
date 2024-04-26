@@ -8,10 +8,14 @@ import {
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { signInSuccess } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const DashSideBar = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState('');
   useEffect(() => {
@@ -24,12 +28,12 @@ const DashSideBar = () => {
 
   const { currentUser } = useSelector((state) => state.user);
 
-  const handleOnDelete = async () => {
-    const res = await fetch(`/api/v1/user/delete/${currentUser._id}`);
+  const handleOnSignOut = async () => {
+    const res = await fetch('/api/v1/auth/signout');
 
     if (res.ok) {
       localStorage.clear();
-      disptach(signInSuccess(null));
+      dispatch(signInSuccess(null));
       navigate('/sign-in');
     }
   };
@@ -54,7 +58,7 @@ const DashSideBar = () => {
                 as='div'
                 active={tab === 'profile'}
                 icon={HiUser}
-                label={'admin'}
+                label={currentUser.isAdmin ? 'Admin' : 'User'}
                 labelColor='dark'
               >
                 Profile
@@ -63,7 +67,7 @@ const DashSideBar = () => {
             <Sidebar.Item
               href='#'
               icon={HiArrowSmRight}
-              onClick={handleOnDelete}
+              onClick={handleOnSignOut}
             >
               Sign out
             </Sidebar.Item>

@@ -6,6 +6,7 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice';
+import { signInSuccess } from '../redux/user/userSlice';
 
 export const Header = () => {
   const path = useLocation().pathname;
@@ -70,6 +71,11 @@ export const Header = () => {
                 {currentUser.email}
               </span>
             </Dropdown.Header>
+            <Link to={'/dashboard?tab=dashboard'}>
+              <Dropdown.Item>Dashboard</Dropdown.Item>
+            </Link>
+
+            <Dropdown.Divider />
             <Link to={'/dashboard?tab=profile'}>
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>

@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       default:
         'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
     },
+    isAdmin: {
+      type: String,
+      default: false,
+    },
   },
   { timestamps: true },
 );
@@ -40,8 +44,8 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-userSchema.methods.generateToken = async function (id) {
-  const token = await jwt.sign({ id }, process.env.JWT_SECRET_KEY);
+userSchema.methods.generateToken = async function (id, admin) {
+  const token = await jwt.sign({ id, admin }, process.env.JWT_SECRET_KEY);
   return token;
 };
 

@@ -1,5 +1,5 @@
 export const jwtToken = async (res, user) => {
-  const token = await user.generateToken(user._id);
+  const token = await user.generateToken(user._id, user.isAdmin);
 
   const options = {
     httpOnly: true,
