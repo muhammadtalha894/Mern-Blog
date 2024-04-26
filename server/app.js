@@ -4,6 +4,7 @@ import authRouter from './routes/auth.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { errorMiddleWare } from './middleware/error.middleware.js';
+import userRoute from './routes/user.route.js';
 
 dotenv.config({
   path: 'server/utils/config.env',
@@ -34,4 +35,5 @@ app.use(
 );
 
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/user', userRoute);
 app.use(errorMiddleWare);

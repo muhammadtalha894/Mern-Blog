@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
@@ -14,6 +14,18 @@ export const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
 
   const { theme } = useSelector((state) => state.theme);
+
+  const navigate = useNavigate();
+
+  const handleOnSignOut = async () => {
+    const res = await fetch('/api/v1/auth/signout');
+
+    if (res.ok) {
+      localStorage.clear();
+      dispatch(signInSuccess(null));
+      navigate('/sign-in');
+    }
+  };
 
   return (
     <Navbar className='border-b-2'>
@@ -62,7 +74,7 @@ export const Header = () => {
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item>Sign out</Dropdown.Item>
+            <Dropdown.Item onClick={handleOnSignOut}>Sign out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to='sign-in'>

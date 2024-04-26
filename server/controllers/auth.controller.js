@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import User from '../models/user.model.js';
 import ErrorHandler from '../utils/errorHandler.js';
 import { jwtToken } from '../utils/jwtToken.js';
@@ -21,7 +22,6 @@ export const signUp = async (req, res, next) => {
 
     res.status(201).json({ success: true });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -53,7 +53,6 @@ export const signIn = async (req, res, next) => {
 export const Google = async (req, res, next) => {
   const { username, email, photo } = req.body;
 
-
   try {
     const user = await User.findOne({ email });
 
@@ -74,6 +73,17 @@ export const Google = async (req, res, next) => {
       await newUser.save();
       jwtToken(res, newUser);
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const signOut = (req, res, next) => {
+  try {
+    res
+      .clearCookie('access_blog_token')
+      .status(200)
+      .json({ success: true, message: 'Successfully sign out' });
   } catch (error) {
     next(error);
   }

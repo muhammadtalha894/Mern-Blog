@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const DashSideBar = () => {
   const location = useLocation();
@@ -20,13 +21,29 @@ const DashSideBar = () => {
       setTab(tabFormUrl);
     }
   }, [location.search]);
+
+  const { currentUser } = useSelector((state) => state.user);
+
+  const handleOnDelete = async () => {
+    const res = await fetch(`/api/v1/user/delete/${currentUser._id}`);
+
+    if (res.ok) {
+      localStorage.clear();
+      disptach(signInSuccess(null));
+      navigate('/sign-in');
+    }
+  };
   return (
     <>
       <Sidebar aria-label='Default sidebar example ' className='w-full md:w-56'>
         <Sidebar.Items>
           <Sidebar.ItemGroup>
             <Link to={'/dashboard?tab=dashboard'}>
-              <Sidebar.Item active={tab === 'dashboard'} icon={HiChartPie}>
+              <Sidebar.Item
+                active={tab === 'dashboard'}
+                icon={HiChartPie}
+                as='div'
+              >
                 Dashboard
               </Sidebar.Item>
             </Link>
@@ -34,6 +51,7 @@ const DashSideBar = () => {
 
             <Link to={'/dashboard?tab=profile'}>
               <Sidebar.Item
+                as='div'
                 active={tab === 'profile'}
                 icon={HiUser}
                 label={'admin'}
@@ -42,7 +60,11 @@ const DashSideBar = () => {
                 Profile
               </Sidebar.Item>
             </Link>
-            <Sidebar.Item href='#' icon={HiArrowSmRight}>
+            <Sidebar.Item
+              href='#'
+              icon={HiArrowSmRight}
+              onClick={handleOnDelete}
+            >
               Sign out
             </Sidebar.Item>
           </Sidebar.ItemGroup>
