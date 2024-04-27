@@ -9,6 +9,7 @@ import { Header } from './components/Header';
 import Footer from './components/Footer';
 import PrivateRoute from './components/privateRoute';
 import CreatePost from './pages/CreatePost';
+import UpdatePost from './pages/UpdatePost';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/create-post' element={<CreatePost />} />
+            <Route path='/update-post/:id' element={<UpdatePost />} />
           </Route>
         </Routes>
         <Footer />

@@ -4,6 +4,8 @@ import {
   HiUser,
   HiArrowRight,
   HiArrowSmRight,
+  HiDocument,
+  HiDocumentText,
 } from 'react-icons/hi';
 import React from 'react';
 import { useState, useEffect } from 'react';
@@ -41,17 +43,18 @@ const DashSideBar = () => {
     <>
       <Sidebar aria-label='Default sidebar example ' className='w-full md:w-56'>
         <Sidebar.Items>
-          <Sidebar.ItemGroup>
+          <Sidebar.ItemGroup className='flex flex-col gap-1'>
             <Link to={'/dashboard?tab=dashboard'}>
-              <Sidebar.Item
-                active={tab === 'dashboard'}
-                icon={HiChartPie}
-                as='div'
-              >
-                Dashboard
-              </Sidebar.Item>
+              {currentUser.isAdmin && (
+                <Sidebar.Item
+                  active={tab === 'dashboard'}
+                  icon={HiChartPie}
+                  as='div'
+                >
+                  Dashboard
+                </Sidebar.Item>
+              )}
             </Link>
-            <div></div>
 
             <Link to={'/dashboard?tab=profile'}>
               <Sidebar.Item
@@ -62,6 +65,16 @@ const DashSideBar = () => {
                 labelColor='dark'
               >
                 Profile
+              </Sidebar.Item>
+            </Link>
+            <Link to={'/dashboard?tab=post'}>
+              <Sidebar.Item
+                as='div'
+                active={tab === 'post'}
+                icon={HiDocumentText}
+                labelColor='dark'
+              >
+                Posts
               </Sidebar.Item>
             </Link>
             <Sidebar.Item

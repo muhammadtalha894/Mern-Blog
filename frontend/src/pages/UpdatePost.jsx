@@ -2,7 +2,7 @@ import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { app } from '../firebase';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getStorage,
@@ -10,14 +10,29 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage';
+import { useParams } from 'react-router-dom';
 
-const CreatePost = () => {
-  const [value, setValue] = useState('');
+const UpdatePost = () => {
+  const { id } = useParams();
+
+  const [formDetails, setFormDetails] = useState({});
+
+  useEffect(() => {
+    const updatePostFunc = async () => {
+      const res = await fetch(`/api/v1/post/singlepost/${id}`);
+      const data = await res.json();
+      if (res.ok) {
+        setFormDetails(data.post);
+      }
+    };
+    updatePostFunc();
+  }, []);
+
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
   const [imageUploadError, setImageUploadError] = useState(null);
-  const [formDetails, setFormDetails] = useState({});
-  const [PublishError, setPublishError] = useState(null);
+
+  const [PublishError, setUpdateError] = useState(null);
   const navigate = useNavigate();
 
   const handleUploadImage = () => {
@@ -63,7 +78,7 @@ const CreatePost = () => {
   const handleOnPostSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/v1/post/create', {
+      const res = await fetch(`/api/v1/post/update/${id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,16 +86,18 @@ const CreatePost = () => {
         body: JSON.stringify(formDetails),
       });
       const data = await res.json();
+      console.log(data);
 
       if (!res.ok) {
-        setPublishError(data.message);
+        setUpdateError(data.message);
       }
       if (res.ok) {
-        setPublishError(null);
-        navigate(`/post/${data.savedPost.slug}`);
+        setUpdateError(null);
+        navigate(`/post/${data.updatedPost.slug}`);
       }
     } catch (error) {
-      setPublishError('Something went wrong!');
+      console.log(error);
+      setUpdateError('Something went wrong!');
     }
   };
 
@@ -88,7 +105,7 @@ const CreatePost = () => {
     <>
       <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-semibold'>
-          Create a Post
+          Update a Post
         </h1>
         <form onSubmit={handleOnPostSubmit} className='flex flex-col gap-4'>
           <div className='flex flex-col gap-4 sm:flex-row justify-between'>
@@ -97,12 +114,14 @@ const CreatePost = () => {
               placeholder='Title'
               required
               className='flex-1'
+              value={formDetails.title}
               id='title'
               onChange={(e) =>
                 setFormDetails({ ...formDetails, title: e.target.value })
               }
             />
             <Select
+              value={formDetails.category}
               onChange={(e) =>
                 setFormDetails({ ...formDetails, category: e.target.value })
               }
@@ -145,13 +164,14 @@ const CreatePost = () => {
             theme='snow'
             className='h-72 mb-12'
             placeholder='Write something... '
+            value={formDetails.content}
             onChange={(value) =>
               setFormDetails({ ...formDetails, content: value })
             }
             required
           />
           <Button type='submit' gradientDuoTone={'purpleToPink'}>
-            Publish
+            Update
           </Button>
 
           {PublishError && <Alert color='failure'>{PublishError}</Alert>}
@@ -161,4 +181,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default UpdatePost;
