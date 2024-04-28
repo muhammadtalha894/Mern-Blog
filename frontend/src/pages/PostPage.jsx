@@ -73,7 +73,7 @@ const PostPage = () => {
             </div>
           </div>
           <div
-            className='p-3 w-full mx-auto max-w-2xl post-content'
+            className='p-3 w-full mx-auto max-w-2xl post-content overflow-auto'
             dangerouslySetInnerHTML={{
               __html: post && post.content,
             }}

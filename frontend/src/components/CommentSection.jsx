@@ -1,11 +1,30 @@
 import { Alert, Button, TextInput, Textarea } from 'flowbite-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Comment from './Comment';
 const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user);
-  const [comment, setComment] = useState('');
   const [commentError, setCommentError] = useState(null);
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    const fetchCommnets = async () => {
+      try {
+        const res = await fetch(`/api/v1/comment/getpostcomments/${postId}`);
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setComments(data.comments);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchCommnets();
+  }, []);
 
   const handleOnCommentSubmit = async (e) => {
     e.preventDefault();
@@ -90,11 +109,29 @@ const CommentSection = ({ postId }) => {
                   Submit
                 </Button>
               </div>
+              {commentError && (
+                <Alert className='mt-5' color='failure'>
+                  {commentError}
+                </Alert>
+              )}
             </form>
-            {commentError && (
-              <Alert className='mt-5' color='failure'>
-                {commentError}
-              </Alert>
+            {comments.length === 0 ? (
+              <p className='text-sm my-5'>No comments yet</p>
+            ) : (
+              <>
+                <div className='flex items-center gap-2 text-sm font-semibold mt-6'>
+                  <p>Comments</p>
+                  <div>
+                    <p className='border rounded-sm border-gray-500 px-2'>
+                      {comments.length}
+                    </p>
+                  </div>
+                </div>
+
+                {comments.map((com) => (
+                  <Comment key={com._id} comment={com} />
+                ))}
+              </>
             )}
           </>
         )}
