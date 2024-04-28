@@ -6,6 +6,7 @@ import {
   BsTwitter,
   BsGithub,
   BsDribbble,
+  BsLinkedin,
 } from 'react-icons/bs';
 export default function FooterCom() {
   return (
@@ -32,14 +33,14 @@ export default function FooterCom() {
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  100 JS Projects
+                  Contact
                 </Footer.Link>
                 <Footer.Link
-                  href='/about'
+                  href='mailto:talhatam178@gmail.com'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  Talha's Blog
+                  Email
                 </Footer.Link>
               </Footer.LinkGroup>
             </div>
@@ -53,7 +54,9 @@ export default function FooterCom() {
                 >
                   Github
                 </Footer.Link>
-                <Footer.Link href='#'>Discord</Footer.Link>
+                <Footer.Link href='https://www.linkedin.com/in/muhammad-talha-bin-tayyab-b8aa94225/'>
+                  Linkedin
+                </Footer.Link>
               </Footer.LinkGroup>
             </div>
             <div>
@@ -73,14 +76,23 @@ export default function FooterCom() {
             year={new Date().getFullYear()}
           />
           <div className='flex gap-6 sm:mt-0 mt-4 sm:justify-center'>
-            <Footer.Icon href='#' icon={BsFacebook} />
-            <Footer.Icon href='#' icon={BsInstagram} />
+            <Footer.Icon
+              href='https://www.facebook.com/talha.bhat.39'
+              icon={BsFacebook}
+            />
+            <Footer.Icon
+              href='https://www.instagram.com/muhammad_talha178/'
+              icon={BsInstagram}
+            />
             <Footer.Icon href='#' icon={BsTwitter} />
             <Footer.Icon
               href='https://github.com/muhammadtalha894'
               icon={BsGithub}
             />
-            <Footer.Icon href='#' icon={BsDribbble} />
+            <Footer.Icon
+              href='https://www.linkedin.com/in/muhammad-talha-bin-tayyab-b8aa94225/'
+              icon={BsLinkedin}
+            />
           </div>
         </div>
       </div>

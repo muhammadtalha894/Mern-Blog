@@ -6,6 +6,7 @@ import { errorMiddleWare } from './middleware/error.middleware.js';
 import authRouter from './routes/auth.route.js';
 import userRoute from './routes/user.route.js';
 import postRoute from './routes/post.route.js';
+import commentRoute from './routes/comment.route.js';
 
 dotenv.config({
   path: 'server/utils/config.env',
@@ -38,4 +39,5 @@ app.use(
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/post', postRoute);
+app.use('/api/v1/comment', commentRoute);
 app.use(errorMiddleWare);

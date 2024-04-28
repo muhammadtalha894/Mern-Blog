@@ -10,11 +10,14 @@ import Footer from './components/Footer';
 import PrivateRoute from './components/privateRoute';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
+import PostPage from './pages/PostPage';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <>
       <Router>
+        {/* <ScrollToTop /> */}
         <Header />
         <Routes>
           <Route path='/' element={<Home />}></Route>
@@ -22,6 +25,7 @@ function App() {
           <Route path='/sign-in' element={<SignIn />}></Route>
           <Route path='/sign-up' element={<SignUp />}></Route>
           <Route path='/projects' element={<Projects />}></Route>
+          <Route path='/post/:postSlug' element={<PostPage />}></Route>
 
           <Route element={<PrivateRoute />}>
             <Route path='/dashboard' element={<Dashboard />} />

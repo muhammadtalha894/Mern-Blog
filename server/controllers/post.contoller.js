@@ -92,7 +92,6 @@ export const getSinglePost = async (req, res, next) => {
 };
 
 export const updatePost = async (req, res, next) => {
-  console.log(req.body);
   if (!req.body.title || !req.body.content) {
     return next(new ErrorHandler('Please provide all required fields!'));
   }

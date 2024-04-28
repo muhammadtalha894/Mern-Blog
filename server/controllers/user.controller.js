@@ -77,8 +77,6 @@ export const getAllUserAdmin = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    console.log(users);
-
     const totalUser = await User.countDocuments();
 
     const now = new Date();
