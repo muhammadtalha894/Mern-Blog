@@ -92,6 +92,10 @@ export const getSinglePost = async (req, res, next) => {
 };
 
 export const updatePost = async (req, res, next) => {
+  console.log(req.body);
+  if (!req.body.title || !req.body.content) {
+    return next(new ErrorHandler('Please provide all required fields!'));
+  }
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return next(new ErrorHandler('Post not found!'));
@@ -104,11 +108,18 @@ export const updatePost = async (req, res, next) => {
 
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, slug },
+      {
+        $set: {
+          title: req.body.title,
+          category: req.body.category,
+          image: req.body.image,
+          content: req.body.content,
+          slug,
+        },
+      },
       { new: true },
     );
 
-    // const updatedPost = await updatePost.save();
     res.status(200).json({ success: true, updatedPost });
   } catch (error) {
     next(error);

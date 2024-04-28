@@ -100,7 +100,6 @@ const DashPosts = () => {
       console.log(error);
     }
   };
-  console.log(posts);
 
   return (
     <>

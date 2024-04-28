@@ -4,9 +4,12 @@ import { useLocation } from 'react-router-dom';
 import DashSideBar from '../components/DashSideBar';
 import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/DashPosts';
+import { useSelector } from 'react-redux';
+import DashUser from '../components/DashUser';
 
 const Dashboard = () => {
-  
+  const { currentUser } = useSelector((state) => state.user);
+
   const location = useLocation();
 
   const [tab, setTab] = useState('');
@@ -24,7 +27,7 @@ const Dashboard = () => {
       </div>
       {tab === 'profile' && <DashProfile />}
       {tab === 'post' && <DashPosts />}
-      
+      {currentUser.isAdmin && tab === 'user' && <DashUser />}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import {
   HiArrowSmRight,
   HiDocument,
   HiDocumentText,
+  HiUserGroup,
 } from 'react-icons/hi';
 import React from 'react';
 import { useState, useEffect } from 'react';
@@ -77,6 +78,18 @@ const DashSideBar = () => {
                 Posts
               </Sidebar.Item>
             </Link>
+            {currentUser.isAdmin && (
+              <Link to={'/dashboard?tab=user'}>
+                <Sidebar.Item
+                  as='div'
+                  active={tab === 'user'}
+                  icon={HiUserGroup}
+                  labelColor='dark'
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+            )}
             <Sidebar.Item
               href='#'
               icon={HiArrowSmRight}

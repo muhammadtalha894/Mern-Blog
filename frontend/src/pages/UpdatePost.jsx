@@ -26,7 +26,7 @@ const UpdatePost = () => {
       }
     };
     updatePostFunc();
-  }, []);
+  }, [formDetails._id]);
 
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
@@ -71,7 +71,6 @@ const UpdatePost = () => {
     } catch (error) {
       setImageUploadError('Image upload failed ');
       setImageUploadProgress(null);
-      console.log(error);
     }
   };
 
@@ -86,7 +85,6 @@ const UpdatePost = () => {
         body: JSON.stringify(formDetails),
       });
       const data = await res.json();
-      console.log(data);
 
       if (!res.ok) {
         setUpdateError(data.message);
@@ -96,7 +94,6 @@ const UpdatePost = () => {
         navigate(`/post/${data.updatedPost.slug}`);
       }
     } catch (error) {
-      console.log(error);
       setUpdateError('Something went wrong!');
     }
   };

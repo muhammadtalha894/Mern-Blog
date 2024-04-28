@@ -65,3 +65,44 @@ export const deleteUser = async (req, res, next) => {
     .clearCookie('access_blog_token')
     .json('User has been deleted');
 };
+export const getAllUserAdmin = async (req, res, next) => {
+  if (!req.user.isAdmin) return next(new ErrorHandler('You Are Not an Admin!'));
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortDirection = req.query.order || 'asc' ? 1 : -1;
+
+    const users = await User.find({}, { password: 0 })
+      .sort({ createdAt: sortDirection })
+      .limit(limit)
+      .skip(startIndex);
+
+    console.log(users);
+
+    const totalUser = await User.countDocuments();
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate(),
+    );
+
+    res.status(200).json({ success: true, users, totalUser, oneMonthAgo });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAdminUser = async (req, res, next) => {
+  try {
+    if (!req.user.isAdmin)
+      return next(new ErrorHandler('You Are Not an Admin!'));
+
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};

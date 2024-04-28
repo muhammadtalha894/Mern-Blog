@@ -44,8 +44,8 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-userSchema.methods.generateToken = async function (id, admin) {
-  const token = await jwt.sign({ id, admin }, process.env.JWT_SECRET_KEY);
+userSchema.methods.generateToken = async function (id, isAdmin) {
+  const token = await jwt.sign({ id, isAdmin }, process.env.JWT_SECRET_KEY);
   return token;
 };
 
