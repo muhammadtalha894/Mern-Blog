@@ -77,7 +77,7 @@ export const getAllUserAdmin = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    const totalUser = await User.countDocuments();
+    const totalUsers = await User.countDocuments();
 
     const now = new Date();
 
@@ -86,8 +86,11 @@ export const getAllUserAdmin = async (req, res, next) => {
       now.getMonth() - 1,
       now.getDate(),
     );
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
 
-    res.status(200).json({ success: true, users, totalUser, oneMonthAgo });
+    res.status(200).json({ success: true, users, totalUsers, lastMonthUsers });
   } catch (error) {
     next(error);
   }

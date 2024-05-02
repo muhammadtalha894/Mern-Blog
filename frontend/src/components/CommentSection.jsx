@@ -3,16 +3,52 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Comment from './Comment';
-const CommentSection = ({ postId }) => {
+import { useNavigate } from 'react-router-dom';
+const CommentSection = ({ post }) => {
+  const navigate = useNavigate();
+
   const { currentUser } = useSelector((state) => state.user);
   const [commentError, setCommentError] = useState(null);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
 
+  const handleOnUpdatedComment = (id, comment) => {
+    setComments(
+      comments.map((com) => {
+        return com._id === id ? { ...com, content: comment.content } : com;
+      }),
+    );
+  };
+  const handleOnCommentDelete = async (id, commentUserId) => {
+    try {
+      const res = await fetch(`/api/v1/comment/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          postUserId: post.userId,
+          commentId: id,
+          commentUserId,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setComments((prev) => prev.filter((com) => com._id !== id));
+      }
+      if (!res.ok) {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchCommnets = async () => {
       try {
-        const res = await fetch(`/api/v1/comment/getpostcomments/${postId}`);
+        const res = await fetch(`/api/v1/comment/getpostcomments/${post._id}`);
 
         const data = await res.json();
 
@@ -24,6 +60,8 @@ const CommentSection = ({ postId }) => {
       }
     };
     fetchCommnets();
+
+    return () => {};
   }, []);
 
   const handleOnCommentSubmit = async (e) => {
@@ -41,7 +79,7 @@ const CommentSection = ({ postId }) => {
 
         body: JSON.stringify({
           content: comment,
-          postId,
+          postId: post._id,
           userId: currentUser._id,
         }),
       });
@@ -50,6 +88,8 @@ const CommentSection = ({ postId }) => {
 
       if (res.ok) {
         setComment('');
+        setComments([...comments, data.newComment]);
+
         setCommentError(null);
       }
       if (!res.ok) {
@@ -61,12 +101,45 @@ const CommentSection = ({ postId }) => {
     }
   };
 
+  const handleOnLike = async (id) => {
+    if (!currentUser) {
+      navigate('/sign-in');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/v1/comment/likecomment/${id}`);
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setComments(
+          comments.map((com) => {
+            return com._id === id
+              ? {
+                  ...com,
+                  likes: data.comment.likes,
+                  numOfLikes: data.comment.numOfLikes,
+                }
+              : com;
+          }),
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <>
       <div className=' mx-auto w-full max-w-2xl'>
         {currentUser ? (
           <div className='flex  items-center gap-1 my-5 text-gray-500 text-sm '>
-            <p className='text-gray-500'>Signed in as:</p>
+            <p
+              className='text-gray-500'
+              onClick={() => handleOnLike('662f934d0642e668449796c6')}
+            >
+              Signed in as:
+            </p>
             <img
               src={currentUser.photo}
               alt={currentUser.username}
@@ -129,7 +202,13 @@ const CommentSection = ({ postId }) => {
                 </div>
 
                 {comments.map((com) => (
-                  <Comment key={com._id} comment={com} />
+                  <Comment
+                    key={com._id}
+                    comment={com}
+                    handleOnCommentDelete={handleOnCommentDelete}
+                    handleOnLike={handleOnLike}
+                    handleOnUpdatedComment={handleOnUpdatedComment}
+                  />
                 ))}
               </>
             )}

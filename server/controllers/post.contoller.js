@@ -48,7 +48,9 @@ export const getPosts = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments({
+      ...(req.query.userId && { userId: req.query.userId }),
+    });
 
     const now = new Date();
 
@@ -59,6 +61,7 @@ export const getPosts = async (req, res, next) => {
     );
     const lastMonthPosts = await Post.countDocuments({
       createdAt: { $gte: oneMonthAgo },
+      ...(req.query.userId && { userId: req.query.userId }),
     });
     res.status(200).json({ success: true, posts, totalPosts, lastMonthPosts });
   } catch (error) {

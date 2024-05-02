@@ -7,6 +7,7 @@ import {
   HiDocument,
   HiDocumentText,
   HiUserGroup,
+  HiAnnotation,
 } from 'react-icons/hi';
 import React from 'react';
 import { useState, useEffect } from 'react';
@@ -46,15 +47,13 @@ const DashSideBar = () => {
         <Sidebar.Items>
           <Sidebar.ItemGroup className='flex flex-col gap-1'>
             <Link to={'/dashboard?tab=dashboard'}>
-              {currentUser.isAdmin && (
-                <Sidebar.Item
-                  active={tab === 'dashboard'}
-                  icon={HiChartPie}
-                  as='div'
-                >
-                  Dashboard
-                </Sidebar.Item>
-              )}
+              <Sidebar.Item
+                active={tab === 'dashboard'}
+                icon={HiChartPie}
+                as='div'
+              >
+                Dashboard
+              </Sidebar.Item>
             </Link>
 
             <Link to={'/dashboard?tab=profile'}>
@@ -76,6 +75,16 @@ const DashSideBar = () => {
                 labelColor='dark'
               >
                 Posts
+              </Sidebar.Item>
+            </Link>
+            <Link to={'/dashboard?tab=comment'}>
+              <Sidebar.Item
+                as='div'
+                active={tab === 'comment'}
+                icon={HiAnnotation}
+                labelColor='dark'
+              >
+                Comments
               </Sidebar.Item>
             </Link>
             {currentUser.isAdmin && (

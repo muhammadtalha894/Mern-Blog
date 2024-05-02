@@ -6,6 +6,9 @@ import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/DashPosts';
 import { useSelector } from 'react-redux';
 import DashUser from '../components/DashUser';
+import DashComments from '../components/DashComments';
+import { Navigate } from 'react-router-dom';
+import DashBoardCom from '../components/DashBoardCom';
 
 const Dashboard = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -26,8 +29,13 @@ const Dashboard = () => {
         <DashSideBar />
       </div>
       {tab === 'profile' && <DashProfile />}
+      {tab === 'dashboard' && <DashBoardCom />}
       {tab === 'post' && <DashPosts />}
-      {currentUser.isAdmin && tab === 'user' && <DashUser />}
+      {tab === 'comment' && <DashComments />}
+      {(currentUser.isAdmin && tab === 'user' && <DashUser />) ||
+        (!currentUser.isAdmin && tab === 'user' && (
+          <Navigate to={'/dashboard'} />
+        ))}
     </div>
   );
 };

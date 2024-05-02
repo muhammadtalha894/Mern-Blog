@@ -42,11 +42,11 @@ const CreatePost = () => {
         },
         (error) => {
           setImageUploadError('Image upload failed ');
-          setImageUploadProgress(null);
+          setImageUploadProgress(0);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUploadProgress(null);
+            setImageUploadProgress(0);
             setImageUploadError(null);
             setFile(null);
             setFormDetails({ ...formDetails, image: downloadURL });
@@ -129,9 +129,7 @@ const CreatePost = () => {
               onClick={handleUploadImage}
               disabled={imageUploadProgress}
             >
-              {imageUploadProgress > 0 && imageUploadProgress < 100
-                ? 'Uploading....'
-                : 'Upload Image'}
+              {imageUploadProgress > 0 ? 'Uploading....' : 'Upload Image'}
             </Button>
           </div>
 

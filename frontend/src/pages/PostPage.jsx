@@ -5,14 +5,39 @@ import { Link } from 'react-router-dom';
 
 import { Button, Spinner } from 'flowbite-react';
 import CommentSection from '../components/CommentSection';
+import Post from '../components/Post';
 
 const PostPage = () => {
   const { postSlug } = useParams();
   const [loading, setloading] = useState(false);
   const [error, setError] = useState(true);
   const [post, setPost] = useState(null);
+  const [recPost, setRecPost] = useState([]);
 
   useEffect(() => {
+    const fetchPostRecPost = async () => {
+      try {
+        setloading(true);
+        const res = await fetch(`/api/v1/post/getposts?limit=3`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setloading(false);
+
+          setRecPost(data.posts);
+          setError(false);
+        }
+        if (!data.success) {
+          setloading(false);
+          setError(false);
+        }
+      } catch (error) {
+        setloading(false);
+        setError(true);
+      }
+    };
+    fetchPostRecPost();
+
     const fetchPostBySlug = async () => {
       try {
         setloading(true);
@@ -49,7 +74,7 @@ const PostPage = () => {
             {post && post.title}
           </h1>
           <Link
-            to={`/search?${post && post.category}`}
+            to={`/search?category=${post && post.category}`}
             className='self-center mt-5'
           >
             <Button size='xs' pill color='gray' className='p-1'>
@@ -78,7 +103,19 @@ const PostPage = () => {
               __html: post && post.content,
             }}
           ></div>
-          <CommentSection postId={post && post._id} />
+          <CommentSection post={post && post} />
+
+          {recPost.length > 0 && (
+            <div className='mb-5 flex flex-col items-center justify-center'>
+              <h1 className='text-xl mt-5 mb-5'>Recently Articles</h1>
+
+              <div className='flex flex-col justify-center flex-wrap gap-5 sm:flex-row'>
+                {recPost.map((post) => (
+                  <Post post={post} />
+                ))}
+              </div>
+            </div>
+          )}
         </main>
       )}
     </>

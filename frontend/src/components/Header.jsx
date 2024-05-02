@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/ai';
@@ -11,6 +11,26 @@ import { signInSuccess } from '../redux/user/userSlice';
 export const Header = () => {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+
+    const serachTermFromUrl = urlParams.get('searchTerm');
+
+    if (serachTermFromUrl) {
+      setSearchTerm(serachTermFromUrl);
+    }
+  }, [location.search]);
+
+  const handleOnSearch = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
+
+    navigate(`/search?${searchQuery}`);
+  };
 
   const { currentUser } = useSelector((state) => state.user);
 
@@ -39,8 +59,10 @@ export const Header = () => {
         </span>
         Blog
       </Link>
-      <form>
+      <form onSubmit={handleOnSearch}>
         <TextInput
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           type='text'
           placeholder='Search'
           rightIcon={AiOutlineSearch}
@@ -97,9 +119,6 @@ export const Header = () => {
         </Navbar.Link>
         <Navbar.Link active={path === '/about'} as={'div'}>
           <Link to='/about'>About</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === '/projects'} as={'div'}>
-          <Link to='/projects'>Projects</Link>
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
